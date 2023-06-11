@@ -43,6 +43,7 @@ if StrictVersion(seesaw.__version__) < StrictVersion('0.8.5'):
 WGET_AT = find_executable(
     'Wget+AT',
     [
+        'GNU Wget 1.21.3-at.20230605.01',
         'GNU Wget 1.21.3-at.20230208.01',
         'GNU Wget 1.21.3-at.20220608.02'
     ],
@@ -61,7 +62,7 @@ if not WGET_AT:
 #
 # Update this each time you make a non-cosmetic change.
 # It will be added to the WARC files and reported to the tracker.
-VERSION = '20230526.01'
+VERSION = '20230611.01'
 USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36'
 TRACKER_ID = 'line-blog'
 TRACKER_HOST = 'tracker'
@@ -355,7 +356,7 @@ class WgetArgsDesktop(object):
 project = Project(
     title='LINE BLOG',
     project_html='''
-        <img class="project-logo" alt="Project logo" src="" height="50px" title="">
+        <img class="project-logo" alt="Project logo" src="https://wiki.archiveteam.org/images/4/4d/LINE_BLOG_icon.png" height="50px" title="">
         <h2>LINE BLOG <span class="links"><a href="https://lineblog.me/">Website</a> &middot; <a href="http://tracker.archiveteam.org/#/">Leaderboard</a> &middot; <a href="https://wiki.archiveteam.org/index.php/LINE_BLOG">Wiki</a></span></h2>
         <p>Archiving LINE BLOG.</p>
     ''',

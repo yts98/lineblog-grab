@@ -119,7 +119,8 @@ allowed = function(url, parenturl)
   if string.match(url, "^https?://www%.facebook%.com/share%.php%?")
     or string.match(url, "^https?://www%.facebook%.com/sharer%.php%?")
     or string.match(url, "^https?://www%.facebook%.com/sharer/sharer%.php%?")
-    or string.match(url, "^https?://twitter%.com/intent/tweet%?") then
+    or string.match(url, "^https?://twitter%.com/intent/tweet%?")
+    or string.match(url, "^https?://twitter%.com/share%?") then
     return false
   end
 
@@ -305,7 +306,7 @@ wget.callbacks.get_urls = function(file, url, is_css, iri)
             assert(item["member"])
             if item["member"]["blog"] then
               assert(item["member"]["blog"] and item["member"]["blog"]["name"] and string.len(item["member"]["blog"]["name"]) >= 1)
-              assert(item["member"]["name"] == item["member"]["blog"]["name"])
+              assert(item["member"]["name"])
               -- print("Found blog " .. item["member"]["blog"]["name"])
               discovered_items["blog:" .. item["member"]["blog"]["name"]] = true
             end
@@ -386,7 +387,7 @@ wget.callbacks.get_urls = function(file, url, is_css, iri)
             discovered_items["tag:" .. item["name"]] = true
           elseif method == "search/users" then
             assert(item["blog"] and item["blog"]["name"] and string.len(item["blog"]["name"]) >= 1)
-            assert(item["name"] and item["name"] == item["blog"]["name"])
+            assert(item["name"])
             -- print("Found blog " .. item["blog"]["name"])
             discovered_items["blog:" .. item["blog"]["name"]] = true
           elseif method == "suggest/tags" then
