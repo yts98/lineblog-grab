@@ -62,7 +62,7 @@ if not WGET_AT:
 #
 # Update this each time you make a non-cosmetic change.
 # It will be added to the WARC files and reported to the tracker.
-VERSION = '20230611.01'
+VERSION = '20230611.02'
 USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36'
 TRACKER_ID = 'line-blog'
 TRACKER_HOST = 'tracker'
@@ -262,15 +262,15 @@ class WgetArgsMobile(object):
         item_name = item['item_name'].split('\0')[0]
         wget_args.extend(['--warc-header', 'x-wget-at-project-item-name: '+item_name])
         item_type, item_value = item_name.split(':', 1)
-        if item_type == 'blog':
+        if item_type == 'b':
             wget_args.extend(['--warc-header', 'line-blog-name: '+item_value])
             wget_args.append('https://blog-api.line-apps.com/v1/blog/'+item_value+'/articles?withBlog=1')
             wget_args.append('https://blog-api.line-apps.com/v1/blog/'+item_value+'/followers/list')
             wget_args.append('https://blog-api.line-apps.com/v1/blog/'+item_value+'/follow/list')
-        elif item_type == 'tag':
+        elif item_type == 't':
             wget_args.extend(['--warc-header', 'line-blog-tag: '+item_value])
             wget_args.append('https://blog-api.line-apps.com/v1/explore/tag?tag='+item_value+'&withTag=1')
-        elif item_type == 'keyword':
+        elif item_type == 'kw':
             # wget_args.extend(['--warc-header', 'line-blog-keyword: '+item_value])
             wget_args.append('https://blog-api.line-apps.com/v1/search/articles?keyword='+urllib.parse.quote_plus(item_value))
             wget_args.append('https://blog-api.line-apps.com/v1/search/tags?keyword='+urllib.parse.quote_plus(item_value))
@@ -326,13 +326,13 @@ class WgetArgsDesktop(object):
         item_name = item['item_name'].split('\0')[0]
         wget_args.extend(['--warc-header', 'x-wget-at-project-item-name: '+item_name])
         item_type, item_value = item_name.split(':', 1)
-        if item_type == 'blog':
+        if item_type == 'b':
             wget_args.extend(['--warc-header', 'line-blog-name: '+item_value])
             wget_args.append('https://lineblog.me/'+item_value+'/')
-        elif item_type == 'tag':
+        elif item_type == 't':
             wget_args.extend(['--warc-header', 'line-blog-tag: '+item_value])
             wget_args.append('https://www.lineblog.me/tag/'+item_value)
-        elif item_type == 'keyword':
+        elif item_type == 'kw':
             # do nothing
             return [WGET_AT, '--quiet', '--spider', 'https://lineblog.me/']
         else:

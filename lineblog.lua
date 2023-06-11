@@ -85,7 +85,7 @@ allowed = function(url, parenturl)
   end
 
   -- item boundary
-  if item_type == "blog" then
+  if item_type == "b" then
     local url_blogName = string.match(url, "^https?://lineblog%.me/([^/]+)/")
     if url_blogName and string.len(url_blogName) >= 1 and url_blogName ~= item_value then
       return false
@@ -95,20 +95,20 @@ allowed = function(url, parenturl)
       local tag = string.match(url, "^https://www%.lineblog%.me/tag/([^/]+)$")
       tag = urlcode.unescape(tag)
       -- print("Found tag " .. tag)
-      discovered_items["tag:" .. tag] = true
+      discovered_items["t:" .. tag] = true
       return false
     elseif string.match(url, "^https?://[^/]*lineblog%.me/")
       or string.match(url, "^https?://blog%.line%-apps%.com/")
       or string.match(url, "^https?://blog%-api%.line%-apps%.com/") then
       return true
     end
-  elseif item_type == "tag" then
+  elseif item_type == "t" then
     if string.match(url, "^https?://www%.lineblog%.me/tag/")
       or string.match(url, "^https?://www%.lineblog%.me/api/tag/")
       or string.match(url, "^https?://blog%-api%.line%-apps%.com/v1/explore/tag") then
       return true
     end
-  elseif item_type == "keyword" then
+  elseif item_type == "kw" then
     if string.match(url, "^https?://blog%-api%.line%-apps%.com/v1/search")
       or string.match(url, "^https?://blog%-api%.line%-apps%.com/v1/suggest") then
       return true
@@ -229,7 +229,7 @@ wget.callbacks.get_urls = function(file, url, is_css, iri)
   local blogName = string.match(url, "^https://blog%-api%.line%-apps%.com/v1/blog/([^/]+)")
   local articleId = string.match(url, "^https://blog%-api%.line%-apps%.com/v1/blog/[^/]+/article/([0-9]+)/")
 
-  if item_type == "blog" then
+  if item_type == "b" then
     html = read_file(file)
     if string.match(url, "^https://blog%-api%.line%-apps%.com/v1/blog/[^/]+/articles") then
       local json = JSON:decode(html)
@@ -285,7 +285,7 @@ wget.callbacks.get_urls = function(file, url, is_css, iri)
         for _, fol in pairs(json["data"]["rows"]) do
           assert(fol["name"] and string.len(fol["name"]) >= 1)
           -- print("Found blog " .. fol["name"])
-          discovered_items["blog:" .. fol["name"]] = true
+          discovered_items["b:" .. fol["name"]] = true
         end
       end
     elseif string.match(url, "^https://blog%-api%.line%-apps%.com/v1/blog/[^/]+/article/[0-9]+/[a-z]+/list") then
@@ -308,17 +308,17 @@ wget.callbacks.get_urls = function(file, url, is_css, iri)
               assert(item["member"]["blog"] and item["member"]["blog"]["name"] and string.len(item["member"]["blog"]["name"]) >= 1)
               assert(item["member"]["name"])
               -- print("Found blog " .. item["member"]["blog"]["name"])
-              discovered_items["blog:" .. item["member"]["blog"]["name"]] = true
+              discovered_items["b:" .. item["member"]["blog"]["name"]] = true
             end
           elseif list_type == "reblog" or list_type == "like" then
             assert(item["blog"] and item["blog"]["name"] and string.len(item["blog"]["name"]) >= 1)
             -- print("Found blog " .. item["blog"]["name"])
-            discovered_items["blog:" .. item["blog"]["name"]] = true
+            discovered_items["b:" .. item["blog"]["name"]] = true
           end
         end
       end
     end
-  elseif item_type == "tag" then
+  elseif item_type == "t" then
     html = read_file(file)
     if string.match(url, "^https://blog%-api%.line%-apps%.com/v1/explore/tag") then
       local json = JSON:decode(html)
@@ -332,7 +332,7 @@ wget.callbacks.get_urls = function(file, url, is_css, iri)
         for _, article in pairs(json["data"]["rows"]) do
           assert(article["blog"] and article["blog"]["name"] and string.len(article["blog"]["name"]) >= 1)
           -- print("Found blog " .. article["blog"]["name"])
-          discovered_items["blog:" .. article["blog"]["name"]] = true
+          discovered_items["b:" .. article["blog"]["name"]] = true
         end
       end
     elseif string.match(url, "^https://www%.lineblog%.me/tag/[^/]+$") then
@@ -351,11 +351,11 @@ wget.callbacks.get_urls = function(file, url, is_css, iri)
         for _, article in pairs(json["rows"]) do
           assert(article["blog"] and article["blog"]["name"] and string.len(article["blog"]["name"]) >= 1)
           -- print("Found blog " .. article["blog"]["name"])
-          discovered_items["blog:" .. article["blog"]["name"]] = true
+          discovered_items["b:" .. article["blog"]["name"]] = true
         end
       end
     end
-  elseif item_type == "keyword" then
+  elseif item_type == "kw" then
     html = read_file(file)
     if string.match(url, "^https://blog%-api%.line%-apps%.com/v1/[a-z]+/[a-z]+") then
       local json = JSON:decode(html)
@@ -375,24 +375,24 @@ wget.callbacks.get_urls = function(file, url, is_css, iri)
           if method == "search/articles" then
             assert(item["blog"] and item["blog"]["name"] and string.len(item["blog"]["name"]) >= 1)
             -- print("Found blog " .. item["blog"]["name"])
-            discovered_items["blog:" .. item["blog"]["name"]] = true
+            discovered_items["b:" .. item["blog"]["name"]] = true
           elseif method == "search/tags" then
             assert(item["name"] and item["articles"])
             for _, article in pairs(item["articles"]) do
               assert(article["blog"] and article["blog"]["name"] and string.len(article["blog"]["name"]) >= 1)
               -- print("Found blog " .. article["blog"]["name"])
-              discovered_items["blog:" .. article["blog"]["name"]] = true
+              discovered_items["b:" .. article["blog"]["name"]] = true
             end
             -- print("Found tag " .. item["name"])
-            discovered_items["tag:" .. item["name"]] = true
+            discovered_items["t:" .. item["name"]] = true
           elseif method == "search/users" then
             assert(item["blog"] and item["blog"]["name"] and string.len(item["blog"]["name"]) >= 1)
             assert(item["name"])
             -- print("Found blog " .. item["blog"]["name"])
-            discovered_items["blog:" .. item["blog"]["name"]] = true
+            discovered_items["b:" .. item["blog"]["name"]] = true
           elseif method == "suggest/tags" then
             -- print("Found tag " .. item["name"])
-            discovered_items["tag:" .. item["name"]] = true
+            discovered_items["t:" .. item["name"]] = true
           end
         end
       end
@@ -420,7 +420,7 @@ wget.callbacks.write_to_warc = function(url, http_stat)
   if abortgrab then
     return false
   end
-  if item_type == "keyword" then
+  if item_type == "kw" then
     return false
   end
   return true
