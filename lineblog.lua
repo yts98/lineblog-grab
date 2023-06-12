@@ -327,7 +327,9 @@ wget.callbacks.get_urls = function(file, url, is_css, iri)
         assert(json["data"] and json["data"]["tag"] and json["data"]["tag"]["name"] and json["data"]["rows"])
         if json["data"]["nextPageKey"] then
           assert(string.len(json["data"]["nextPageKey"]) >= 1)
-          check("https://blog-api.line-apps.com/v1/explore/tag?tag=" .. json["data"]["tag"]["name"] .. "&pageKey=" .. json["data"]["nextPageKey"] .. "&withTag=1")
+          if json["data"]["nextPageKey"] ~= "1001" then
+            check("https://blog-api.line-apps.com/v1/explore/tag?tag=" .. json["data"]["tag"]["name"] .. "&pageKey=" .. json["data"]["nextPageKey"] .. "&withTag=1")
+          end
         end
         for _, article in pairs(json["data"]["rows"]) do
           assert(article["blog"] and article["blog"]["name"] and string.len(article["blog"]["name"]) >= 1)
@@ -346,7 +348,9 @@ wget.callbacks.get_urls = function(file, url, is_css, iri)
         assert(json["tag"] and json["tag"]["name"] and json["rows"])
         if json["nextPageKey"] then
           assert(string.len(json["nextPageKey"]) >= 1)
-          checkXHR("https://www.lineblog.me/api/tag/?tag=" .. json["tag"]["name"] .. "&blogName=&pageKey=" .. json["nextPageKey"], "https://www.lineblog.me/tag/" .. urlcode.escape(json["tag"]["name"]))
+          if json["nextPageKey"] ~= "1001" then
+            checkXHR("https://www.lineblog.me/api/tag/?tag=" .. json["tag"]["name"] .. "&blogName=&pageKey=" .. json["nextPageKey"], "https://www.lineblog.me/tag/" .. urlcode.escape(json["tag"]["name"]))
+          end
         end
         for _, article in pairs(json["rows"]) do
           assert(article["blog"] and article["blog"]["name"] and string.len(article["blog"]["name"]) >= 1)
